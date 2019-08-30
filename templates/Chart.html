@@ -1,0 +1,147 @@
+<html>
+    <head>
+        <title>Result</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="/static/js/RGraph.common.core.js"></script>
+ <script src='/static/js/Chart.min.js'></script>
+<script src="/static/js/RGraph.common.dynamic.js"></script>
+<script src="/static/js/RGraph.common.context.js"></script>
+<script src="/static/js/RGraph.common.annotate.js"></script>
+<script src="/static/js/RGraph.bar.js"></script>
+<script src="/static/js/RGraph.meter.js"></script>
+    </head>
+    <body>
+            <nav class="navbar navbar-dark bg-dark">
+                    <a class="navbar-brand" href="#">UBS</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+    </div>
+  </div>
+            </nav>
+                       
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/">Home</a></li>
+              <li class="breadcrumb-item"><a href="/upload">Upload File</a></li>
+              <li class="breadcrumb-item"><a href="#">Result</a></li>
+            </ol>
+          </nav>
+          <div class="container">
+              <div class="row">
+                  <div class="col-md-6 ">
+                        <div class="card border-success mb-3" style="max-width: 30rem;">
+                                <div class="card-header">Customer Details</div>
+                                <div class="card-body text-success">
+                                  <h4 class="card-title">CustomerID: {{ccid}}</h4>
+                                  <div class="list-group">
+                                        <button type="button" class="list-group-item list-group-item-action active">
+                                          Personal Details
+                                        </button>
+                                        <button type="button" class="list-group-item list-group-item-action">RowNumber : {{rownum}}</button>
+                                        <button type="button" class="list-group-item list-group-item-action">Surname : {{surname}}</button>
+                                        <button type="button" class="list-group-item list-group-item-action">Geography: {{geo}}</button>
+                                        <button type="button" class="list-group-item list-group-item-action" >Gender: {{gender}}</button>
+                                        <button type="button" class="list-group-item list-group-item-action" >Age: {{age}}</button>
+                                      </div>  
+                                      <div class="list-group">
+                                            <button type="button" class="list-group-item list-group-item-action active">
+                                              Finance Details
+                                            </button>
+                                            <button type="button" class="list-group-item list-group-item-action">Salery : {{rownum}}</button>
+                                            <button type="button" class="list-group-item list-group-item-action">CreditScore : {{creditscore}}</button>
+                                            <button type="button" class="list-group-item list-group-item-action">Tenure: {{tenure}}</button>
+                                            <button type="button" class="list-group-item list-group-item-action" >NumofProducts: {{numpro}}</button>
+                                            <button type="button" class="list-group-item list-group-item-action" >HasCrCard {{hascard}}</button>
+                                          </div>  
+                                </div>
+                              </div>
+                  </div>
+                  <div class="col-md-6">
+                        <div class="card border-success mb-3" style="max-width: 35rem;">
+                                <div class="card-header">Churn Prediction Details</div>
+                                <div class="card-body text-success">
+                                  <h5 class="card-title">Churn Rate</h5>
+                                  <canvas id="cvs">
+                                        [No canvas support]
+                                    </canvas>
+                                    <centre><h3>Probability to leave organization is {{ firstname }}%</h3></centre>
+                                </div>
+                              </div>
+                              <div class="card border-success mb-3" style="max-width: 40rem;">
+                                    <div class="card-header">Possible Leaving Details</div>
+                                    <div class="card-body text-success">
+                                      <h5 class="card-title">Reasons</h5>
+                                      <canvas id="chart">
+                                            [No canvas support]
+                                        </canvas>
+                                        <centre><h3>Probable reasons </h3></centre>
+                                    </div>
+                                  </div>      
+
+                  </div>
+                 
+              </div>
+  
+          </div> 
+          <script>
+    	
+                meter = new RGraph.Meter({
+                    id: 'cvs',
+                    min: 0,
+                    max: 100,
+                    value:  [{% for item in values %}
+                                  {{item}},
+                                {% endfor %}],
+                    options: {
+                        segmentRadiusStart: 125,
+                        needleRadius: 115,
+                        needleType: 'pointer',
+                        tickmarksBigColor: 'transparent',
+                        tickmarksSmallColor: 'transparent',
+                        labels: false,
+                        linewidth: 0.0001,
+                        linewidthSegments: 20,
+                        strokestyle: 'white',
+                        colorsRanges: [
+                            [0, 33, '#8FCE21'],
+                            [33, 66, '#FFC900'],
+                            [66, 100, '#FF0000']
+                        ]
+                    }
+                }).grow();
+                
+              </script>
+              <script>
+                   var pieData = [
+            {% for item,label,colors in set %}
+                {
+                    value: {{item}},
+                    label: "{{label}}",
+		    color : "{{colors}}"	
+                },
+                {% endfor %}
+ 		
+ 
+         ];
+ 
+   // get bar chart canvas
+   var mychart = document.getElementById("chart").getContext("2d");
+ 
+   steps = 20
+   max = 20
+   // draw pie chart
+   new Chart(document.getElementById("chart").getContext("2d")).Pie(pieData);
+              </script> 
+               
+
+                   
+          <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+          <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    </body>
+</html>
